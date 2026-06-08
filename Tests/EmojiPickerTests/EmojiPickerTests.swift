@@ -28,6 +28,8 @@ final class EmojiPickerTests: XCTestCase {
 
     func testAvailabilityMinimumOSMapping() {
         // Highest Emoji version guaranteed on every OS at or above the target.
+        XCTAssertEqual(EmojiAvailability.maxVersion(forOSAtLeast: 26, 4), 17.0)
+        XCTAssertEqual(EmojiAvailability.maxVersion(forOSAtLeast: 18, 4), 16.0)
         XCTAssertEqual(EmojiAvailability.maxVersion(forOSAtLeast: 17, 4), 15.1)
         XCTAssertEqual(EmojiAvailability.maxVersion(forOSAtLeast: 16, 4), 15.0)
         XCTAssertEqual(EmojiAvailability.maxVersion(forOSAtLeast: 15, 4), 14.0)

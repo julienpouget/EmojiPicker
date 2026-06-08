@@ -1,5 +1,5 @@
 {
-  "unicodeVersion": "15.1",
+  "unicodeVersion": "17.0",
   "categories": [
     {
       "id": "smileysAndPeople",
@@ -626,6 +626,18 @@
           ]
         },
         {
+          "e": "🫩",
+          "n": "face with bags under eyes",
+          "v": 16.0,
+          "k": [
+            "face",
+            "bags",
+            "under",
+            "eyes",
+            "sleepy"
+          ]
+        },
+        {
           "e": "😷",
           "n": "face with medical mask",
           "v": 0.6,
@@ -901,6 +913,16 @@
           "v": 0.6,
           "k": [
             "flushed",
+            "face",
+            "concerned"
+          ]
+        },
+        {
+          "e": "🫪",
+          "n": "distorted face",
+          "v": 17.0,
+          "k": [
+            "distorted",
             "face",
             "concerned"
           ]
@@ -1641,6 +1663,16 @@
           "k": [
             "anger",
             "symbol",
+            "emotion"
+          ]
+        },
+        {
+          "e": "🫯",
+          "n": "fight cloud",
+          "v": 17.0,
+          "k": [
+            "fight",
+            "cloud",
             "emotion"
           ]
         },
@@ -5729,6 +5761,17 @@
           ]
         },
         {
+          "e": "🫈",
+          "n": "hairy creature",
+          "v": 17.0,
+          "k": [
+            "hairy",
+            "creature",
+            "person",
+            "fantasy"
+          ]
+        },
+        {
           "e": "💆",
           "n": "person getting massage",
           "v": 0.6,
@@ -6584,6 +6627,24 @@
           }
         },
         {
+          "e": "🧑‍🩰",
+          "n": "ballet dancer",
+          "v": 17.0,
+          "k": [
+            "ballet",
+            "dancer",
+            "person",
+            "activity"
+          ],
+          "t": {
+            "0": "🧑🏻‍🩰",
+            "1": "🧑🏼‍🩰",
+            "2": "🧑🏽‍🩰",
+            "3": "🧑🏾‍🩰",
+            "4": "🧑🏿‍🩰"
+          }
+        },
+        {
           "e": "💃",
           "n": "woman dancing",
           "v": 0.6,
@@ -6640,7 +6701,14 @@
             "ears",
             "person",
             "activity"
-          ]
+          ],
+          "t": {
+            "0": "👯🏻",
+            "1": "👯🏼",
+            "2": "👯🏽",
+            "3": "👯🏾",
+            "4": "👯🏿"
+          }
         },
         {
           "e": "👯‍♂️",
@@ -6652,7 +6720,14 @@
             "ears",
             "person",
             "activity"
-          ]
+          ],
+          "t": {
+            "0": "👯🏻‍♂️",
+            "1": "👯🏼‍♂️",
+            "2": "👯🏽‍♂️",
+            "3": "👯🏾‍♂️",
+            "4": "👯🏿‍♂️"
+          }
         },
         {
           "e": "👯‍♀️",
@@ -6664,7 +6739,14 @@
             "ears",
             "person",
             "activity"
-          ]
+          ],
+          "t": {
+            "0": "👯🏻‍♀️",
+            "1": "👯🏼‍♀️",
+            "2": "👯🏽‍♀️",
+            "3": "👯🏾‍♀️",
+            "4": "👯🏿‍♀️"
+          }
         },
         {
           "e": "🧖",
@@ -7265,7 +7347,14 @@
             "wrestling",
             "person",
             "sport"
-          ]
+          ],
+          "t": {
+            "0": "🤼🏻",
+            "1": "🤼🏼",
+            "2": "🤼🏽",
+            "3": "🤼🏾",
+            "4": "🤼🏿"
+          }
         },
         {
           "e": "🤼‍♂️",
@@ -7276,7 +7365,14 @@
             "wrestling",
             "person",
             "sport"
-          ]
+          ],
+          "t": {
+            "0": "🤼🏻‍♂️",
+            "1": "🤼🏼‍♂️",
+            "2": "🤼🏽‍♂️",
+            "3": "🤼🏾‍♂️",
+            "4": "🤼🏿‍♂️"
+          }
         },
         {
           "e": "🤼‍♀️",
@@ -7287,7 +7383,14 @@
             "wrestling",
             "person",
             "sport"
-          ]
+          ],
+          "t": {
+            "0": "🤼🏻‍♀️",
+            "1": "🤼🏼‍♀️",
+            "2": "🤼🏽‍♀️",
+            "3": "🤼🏾‍♀️",
+            "4": "🤼🏿‍♀️"
+          }
         },
         {
           "e": "🤽",
@@ -8129,6 +8232,16 @@
           "v": 0.6,
           "k": [
             "footprints",
+            "person",
+            "symbol"
+          ]
+        },
+        {
+          "e": "🫆",
+          "n": "fingerprint",
+          "v": 16.0,
+          "k": [
+            "fingerprint",
             "person",
             "symbol"
           ]
@@ -9164,6 +9277,16 @@
           ]
         },
         {
+          "e": "🫍",
+          "n": "orca",
+          "v": 17.0,
+          "k": [
+            "orca",
+            "animal",
+            "marine"
+          ]
+        },
+        {
           "e": "🦭",
           "n": "seal",
           "v": 13.0,
@@ -9251,6 +9374,56 @@
           "v": 15.0,
           "k": [
             "jellyfish",
+            "animal",
+            "marine"
+          ]
+        },
+        {
+          "e": "🦀",
+          "n": "crab",
+          "v": 1.0,
+          "k": [
+            "crab",
+            "animal",
+            "marine"
+          ]
+        },
+        {
+          "e": "🦞",
+          "n": "lobster",
+          "v": 11.0,
+          "k": [
+            "lobster",
+            "animal",
+            "marine"
+          ]
+        },
+        {
+          "e": "🦐",
+          "n": "shrimp",
+          "v": 3.0,
+          "k": [
+            "shrimp",
+            "animal",
+            "marine"
+          ]
+        },
+        {
+          "e": "🦑",
+          "n": "squid",
+          "v": 3.0,
+          "k": [
+            "squid",
+            "animal",
+            "marine"
+          ]
+        },
+        {
+          "e": "🦪",
+          "n": "oyster",
+          "v": 12.0,
+          "k": [
+            "oyster",
             "animal",
             "marine"
           ]
@@ -9708,6 +9881,17 @@
             "plant",
             "other"
           ]
+        },
+        {
+          "e": "🪾",
+          "n": "leafless tree",
+          "v": 16.0,
+          "k": [
+            "leafless",
+            "tree",
+            "plant",
+            "other"
+          ]
         }
       ]
     },
@@ -10101,6 +10285,16 @@
             "mushroom",
             "food",
             "vegetable"
+          ]
+        },
+        {
+          "e": "🫜",
+          "n": "root vegetable",
+          "v": 16.0,
+          "k": [
+            "root",
+            "vegetable",
+            "food"
           ]
         },
         {
@@ -10636,56 +10830,6 @@
             "box",
             "food",
             "asian"
-          ]
-        },
-        {
-          "e": "🦀",
-          "n": "crab",
-          "v": 1.0,
-          "k": [
-            "crab",
-            "food",
-            "marine"
-          ]
-        },
-        {
-          "e": "🦞",
-          "n": "lobster",
-          "v": 11.0,
-          "k": [
-            "lobster",
-            "food",
-            "marine"
-          ]
-        },
-        {
-          "e": "🦐",
-          "n": "shrimp",
-          "v": 3.0,
-          "k": [
-            "shrimp",
-            "food",
-            "marine"
-          ]
-        },
-        {
-          "e": "🦑",
-          "n": "squid",
-          "v": 3.0,
-          "k": [
-            "squid",
-            "food",
-            "marine"
-          ]
-        },
-        {
-          "e": "🦪",
-          "n": "oyster",
-          "v": 12.0,
-          "k": [
-            "oyster",
-            "food",
-            "marine"
           ]
         },
         {
@@ -12044,6 +12188,16 @@
           "v": 0.7,
           "k": [
             "mountain",
+            "place",
+            "geographic"
+          ]
+        },
+        {
+          "e": "🛘",
+          "n": "landslide",
+          "v": 17.0,
+          "k": [
+            "landslide",
             "place",
             "geographic"
           ]
@@ -14915,6 +15069,26 @@
           ]
         },
         {
+          "e": "🎺",
+          "n": "trumpet",
+          "v": 0.6,
+          "k": [
+            "trumpet",
+            "musical",
+            "instrument"
+          ]
+        },
+        {
+          "e": "🪊",
+          "n": "trombone",
+          "v": 17.0,
+          "k": [
+            "trombone",
+            "musical",
+            "instrument"
+          ]
+        },
+        {
           "e": "🪗",
           "n": "accordion",
           "v": 13.0,
@@ -14941,16 +15115,6 @@
           "k": [
             "musical",
             "keyboard",
-            "instrument"
-          ]
-        },
-        {
-          "e": "🎺",
-          "n": "trumpet",
-          "v": 0.6,
-          "k": [
-            "trumpet",
-            "musical",
             "instrument"
           ]
         },
@@ -15011,6 +15175,16 @@
           "v": 15.0,
           "k": [
             "flute",
+            "musical",
+            "instrument"
+          ]
+        },
+        {
+          "e": "🪉",
+          "n": "harp",
+          "v": 16.0,
+          "k": [
+            "harp",
             "musical",
             "instrument"
           ]
@@ -15555,6 +15729,15 @@
           ]
         },
         {
+          "e": "🪙",
+          "n": "coin",
+          "v": 13.0,
+          "k": [
+            "coin",
+            "money"
+          ]
+        },
+        {
           "e": "💰",
           "n": "money bag",
           "v": 0.6,
@@ -15564,11 +15747,12 @@
           ]
         },
         {
-          "e": "🪙",
-          "n": "coin",
-          "v": 13.0,
+          "e": "🪎",
+          "n": "treasure chest",
+          "v": 17.0,
           "k": [
-            "coin",
+            "treasure",
+            "chest",
             "money"
           ]
         },
@@ -16374,6 +16558,15 @@
           "v": 13.0,
           "k": [
             "ladder",
+            "tool"
+          ]
+        },
+        {
+          "e": "🪏",
+          "n": "shovel",
+          "v": 16.0,
+          "k": [
+            "shovel",
             "tool"
           ]
         },
@@ -18262,6 +18455,16 @@
           ]
         },
         {
+          "e": "🫟",
+          "n": "splatter",
+          "v": 16.0,
+          "k": [
+            "splatter",
+            "other",
+            "symbol"
+          ]
+        },
+        {
           "e": "#️⃣",
           "n": "keycap: #",
           "v": 0.6,
@@ -19767,6 +19970,16 @@
             "flag",
             "clipperton",
             "island",
+            "country"
+          ]
+        },
+        {
+          "e": "🇨🇶",
+          "n": "flag: sark",
+          "v": 16.0,
+          "k": [
+            "flag",
+            "sark",
             "country"
           ]
         },

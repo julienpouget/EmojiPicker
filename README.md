@@ -23,7 +23,7 @@ a sheet, a native popover, or embed it inline.
 - 🎨 **Skin tones** — long-press any supported emoji to pick a Fitzpatrick tone; the choice is remembered per emoji.
 - 📐 **OS-aware dataset** — emoji newer than the running OS are filtered out automatically, so you never render tofu (□).
 - 🌍 **Localized** (English & French out of the box).
-- 📦 Built from the official **Unicode 15.1** `emoji-test.txt` (1,898 emoji, 306 with skin tones).
+- 📦 Built from the official **Unicode 17.0** `emoji-test.txt` (1,914 emoji, 313 with skin tones).
 
 ## Requirements
 
@@ -181,7 +181,7 @@ The dataset is public, so you can read it without showing the UI:
 EmojiProvider.all              // every available Emoji, flat
 EmojiProvider.categorized      // [(EmojiCategory, [Emoji])], in display order
 EmojiProvider.byValue["👋"]    // fast lookup by default glyph
-EmojiProvider.unicodeVersion   // "15.1"
+EmojiProvider.unicodeVersion   // "17.0"
 EmojiAvailability.maxAvailableVersion  // highest Emoji version this OS renders
 
 let wave = EmojiProvider.byValue["👋"]!

@@ -16,6 +16,8 @@ public enum EmojiAvailability {
 
     /// (minimum OS version, Emoji version it introduced), highest first.
     private static let releaseMap: [(os: OperatingSystemVersion, emoji: Double)] = [
+        (.init(majorVersion: 26, minorVersion: 4, patchVersion: 0), 17.0),
+        (.init(majorVersion: 18, minorVersion: 4, patchVersion: 0), 16.0),
         (.init(majorVersion: 17, minorVersion: 4, patchVersion: 0), 15.1),
         (.init(majorVersion: 16, minorVersion: 4, patchVersion: 0), 15.0),
         (.init(majorVersion: 15, minorVersion: 4, patchVersion: 0), 14.0),

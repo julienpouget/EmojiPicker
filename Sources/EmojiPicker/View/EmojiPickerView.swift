@@ -44,6 +44,11 @@ public struct EmojiPickerView: View {
 
     private let scrollSpace = "emojiPickerScroll"
 
+    /// Creates an emoji picker.
+    ///
+    /// - Note: `configuration` and `store` are captured once when the picker
+    ///   first appears; mutating them afterwards on an already-presented picker
+    ///   has no effect. Recreate the picker to apply a new configuration.
     public init(
         configuration: EmojiPickerConfiguration = .default,
         store: EmojiPreferenceStore = .shared,
@@ -80,9 +85,6 @@ public struct EmojiPickerView: View {
         .emojiPickerBackground(configuration.background)
         .overlayPreferenceValue(SkinToneAnchorKey.self) { anchor in
             toneOverlay(anchor: anchor)
-        }
-        .onChange(of: viewModel.searchText) { _ in
-            viewModel.rebuild()
         }
     }
 

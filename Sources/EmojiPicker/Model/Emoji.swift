@@ -56,9 +56,18 @@ public struct Emoji: Identifiable, Hashable, Sendable {
         return variant
     }
 
-    /// Returns `true` when `query` matches the name or any keyword.
+    /// Returns `true` when `query` matches the name or keywords.
+    ///
+    /// The whole query is first tried as a substring of the name, so natural
+    /// phrases like `"red heart"` match directly. Otherwise every
+    /// whitespace-separated token must match — as a name substring or a keyword
+    /// prefix — so word order doesn't matter (`"up thumbs"` finds `"thumbs up"`).
     func matches(_ query: String) -> Bool {
         if name.contains(query) { return true }
-        return keywords.contains { $0.hasPrefix(query) }
+        let tokens = query.split(separator: " ").map(String.init)
+        guard !tokens.isEmpty else { return false }
+        return tokens.allSatisfy { token in
+            name.contains(token) || keywords.contains { $0.hasPrefix(token) }
+        }
     }
 }

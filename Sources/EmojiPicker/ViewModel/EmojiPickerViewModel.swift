@@ -30,7 +30,15 @@ final class EmojiPickerViewModel: ObservableObject {
         var id: String { category.id }
     }
 
-    @Published var searchText: String = ""
+    // Rebuilding from `didSet` (rather than a view-side `.onChange`) keeps the
+    // text change and the resulting `sections` change in the same runloop tick,
+    // so SwiftUI coalesces them into a single re-render per keystroke.
+    @Published var searchText: String = "" {
+        didSet {
+            guard searchText != oldValue else { return }
+            rebuild()
+        }
+    }
     @Published private(set) var sections: [Section] = []
 
     private let store: EmojiPreferenceStore
@@ -135,20 +143,10 @@ final class EmojiPickerViewModel: ObservableObject {
             if let base = EmojiProvider.byValue[glyph], base.version <= maxVersion {
                 return Item(emoji: base, tone: nil)
             }
-            if let (base, tone) = baseAndTone(for: glyph), base.version <= maxVersion {
-                return Item(emoji: base, tone: tone)
+            if let match = EmojiProvider.byTonedValue[glyph], match.emoji.version <= maxVersion {
+                return Item(emoji: match.emoji, tone: match.tone)
             }
             return nil
         }
-    }
-
-    /// Finds the base emoji and tone for a toned glyph stored in recents.
-    private func baseAndTone(for glyph: String) -> (Emoji, EmojiSkinTone)? {
-        for emoji in EmojiProvider.all where emoji.supportsSkinTones {
-            for (tone, variant) in emoji.skinVariants where variant == glyph {
-                return (emoji, tone)
-            }
-        }
-        return nil
     }
 }

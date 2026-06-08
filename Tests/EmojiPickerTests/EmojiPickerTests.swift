@@ -73,6 +73,20 @@ final class EmojiPickerTests: XCTestCase {
         XCTAssertFalse(heart.matches("zzzzz"))
     }
 
+    func testSearchIsWordOrderInsensitive() throws {
+        let thumbsUp = try XCTUnwrap(EmojiProvider.byValue["👍"])
+        XCTAssertTrue(thumbsUp.matches("thumbs up"), "Phrase substring on the name")
+        XCTAssertTrue(thumbsUp.matches("up thumbs"), "Tokens match regardless of order")
+        XCTAssertFalse(thumbsUp.matches("up rocket"), "Every token must match")
+    }
+
+    func testTonedRecentResolvesViaReverseIndex() throws {
+        let match = try XCTUnwrap(EmojiProvider.byTonedValue["👋🏿"])
+        XCTAssertEqual(match.emoji.value, "👋")
+        XCTAssertEqual(match.tone, .dark)
+        XCTAssertNil(EmojiProvider.byTonedValue["😀"], "A non-toned glyph has no reverse entry")
+    }
+
     func testPreferenceStoreRecentsAndTones() {
         let suite = "EmojiPickerTests-\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suite)!

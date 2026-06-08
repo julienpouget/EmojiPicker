@@ -18,6 +18,7 @@ let package = Package(
             name: "EmojiPicker",
             resources: [
                 .process("Resources/emojis.json"),
+                .process("Resources/Localizable.xcstrings"),
             ]
         ),
         .testTarget(

@@ -167,7 +167,7 @@ Store/      EmojiPreferenceStore — recents + tone prefs (UserDefaults)
 ViewModel/  EmojiPickerViewModel — sections, search, selection (@MainActor)
 View/       EmojiPickerView and its subviews (grid cell, search, tab bar, tone bar) + sheet & popover modifiers
 Support/    Haptics, background-style helper
-Resources/  emojis.json + Localizable.strings
+Resources/  emojis.json + Localizable.xcstrings (String Catalog)
 ```
 
 The skin-tone bar is positioned with SwiftUI `Anchor`/`overlayPreferenceValue`,

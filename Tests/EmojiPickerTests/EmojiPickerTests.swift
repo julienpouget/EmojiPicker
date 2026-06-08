@@ -26,10 +26,29 @@ final class EmojiPickerTests: XCTestCase {
         }
     }
 
-    func testAvailabilityNeverExceedsDeviceVersion() {
+    func testAvailabilityMinimumOSMapping() {
+        // Highest Emoji version guaranteed on every OS at or above the target.
+        XCTAssertEqual(EmojiAvailability.maxVersion(forOSAtLeast: 17, 4), 15.1)
+        XCTAssertEqual(EmojiAvailability.maxVersion(forOSAtLeast: 16, 4), 15.0)
+        XCTAssertEqual(EmojiAvailability.maxVersion(forOSAtLeast: 15, 4), 14.0)
+        XCTAssertEqual(EmojiAvailability.maxVersion(forOSAtLeast: 15, 0), 13.1)
+        XCTAssertEqual(EmojiAvailability.maxVersion(forOSAtLeast: 12, 1), 11.0)
+        XCTAssertEqual(EmojiAvailability.maxVersion(forOSAtLeast: 11, 0), 5.0, "Below the lowest mapped OS falls back to the baseline")
+    }
+
+    @MainActor
+    func testDefaultPolicyNeverExceedsDeviceVersion() {
+        let suite = "EmojiPickerTests-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = EmojiPreferenceStore(defaults: defaults, keyPrefix: "test")
+        let vm = EmojiPickerViewModel(store: store, config: .default) // .device policy
+
         let max = EmojiAvailability.maxAvailableVersion
-        for emoji in EmojiProvider.all {
-            XCTAssertLessThanOrEqual(emoji.version, max)
+        for section in vm.sections {
+            for item in section.items {
+                XCTAssertLessThanOrEqual(item.emoji.version, max)
+            }
         }
     }
 
@@ -114,6 +133,47 @@ final class EmojiPickerTests: XCTestCase {
         // ...but the global preference for the base emoji is untouched.
         XCTAssertNil(vm.displayTone(for: wave))
         XCTAssertNil(store.preferredTone(for: "👋"))
+    }
+
+    @MainActor
+    func testMaxEmojiVersionPolicyCapsBelowDevice() throws {
+        // The device (test sim) can render >= 14.0; cap the picker at 13.0.
+        guard EmojiAvailability.maxAvailableVersion >= 14 else {
+            throw XCTSkip("Test host can't render Emoji 14+, nothing to cap below")
+        }
+        let suite = "EmojiPickerTests-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = EmojiPreferenceStore(defaults: defaults, keyPrefix: "test")
+        let config = EmojiPickerConfiguration(versionPolicy: .maxEmojiVersion(13.0))
+        let vm = EmojiPickerViewModel(store: store, config: config)
+
+        let visible = vm.sections.flatMap { $0.items }
+        XCTAssertFalse(visible.isEmpty)
+        for item in visible {
+            XCTAssertLessThanOrEqual(item.emoji.version, 13.0)
+        }
+        // 🫠 melting face is Emoji 14.0 → renderable on the device but excluded by the cap.
+        XCTAssertFalse(visible.contains { $0.emoji.value == "🫠" }, "14.0 emoji must be capped out")
+        XCTAssertTrue(visible.contains { $0.emoji.value == "😀" }, "1.0 emoji stays visible")
+    }
+
+    @MainActor
+    func testMinimumOSPolicyCaps() throws {
+        guard EmojiAvailability.maxAvailableVersion >= 14 else {
+            throw XCTSkip("Test host can't render Emoji 14+")
+        }
+        let suite = "EmojiPickerTests-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = EmojiPreferenceStore(defaults: defaults, keyPrefix: "test")
+        // An iOS 15.0 deployment target → Emoji 13.1 ceiling for the whole fleet.
+        let config = EmojiPickerConfiguration(versionPolicy: .minimumOS(major: 15, minor: 0))
+        let vm = EmojiPickerViewModel(store: store, config: config)
+
+        for item in vm.sections.flatMap(\.items) {
+            XCTAssertLessThanOrEqual(item.emoji.version, 13.1)
+        }
     }
 
     @MainActor

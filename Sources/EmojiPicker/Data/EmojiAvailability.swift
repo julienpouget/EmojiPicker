@@ -25,6 +25,9 @@ public enum EmojiAvailability {
         (.init(majorVersion: 12, minorVersion: 1, patchVersion: 0), 11.0),
     ]
 
+    /// Conservative floor returned when the OS predates the mapped releases.
+    private static let baseline = 5.0
+
     /// The highest Emoji standard version guaranteed to render on this device.
     ///
     /// Computed once from `ProcessInfo`. On platforms below the lowest mapped
@@ -34,11 +37,31 @@ public enum EmojiAvailability {
         for entry in releaseMap where process.isOperatingSystemAtLeast(entry.os) {
             return entry.emoji
         }
-        return 5.0
+        return baseline
     }()
+
+    /// The highest Emoji version guaranteed to render on *every* OS at or above
+    /// the given minimum — i.e. the lowest common denominator for an app whose
+    /// deployment target is `major.minor`. Use this to show a consistent set
+    /// across a whole device fleet.
+    public static func maxVersion(forOSAtLeast major: Int, _ minor: Int) -> Double {
+        let target = OperatingSystemVersion(majorVersion: major, minorVersion: minor, patchVersion: 0)
+        // releaseMap is highest-OS first; the first entry not newer than the
+        // target is the highest Emoji version that target OS is guaranteed to render.
+        for entry in releaseMap where !isLater(entry.os, than: target) {
+            return entry.emoji
+        }
+        return baseline
+    }
 
     /// Whether an emoji of the given standard version is renderable here.
     public static func isAvailable(version: Double) -> Bool {
         version <= maxAvailableVersion
+    }
+
+    private static func isLater(_ lhs: OperatingSystemVersion, than rhs: OperatingSystemVersion) -> Bool {
+        if lhs.majorVersion != rhs.majorVersion { return lhs.majorVersion > rhs.majorVersion }
+        if lhs.minorVersion != rhs.minorVersion { return lhs.minorVersion > rhs.minorVersion }
+        return lhs.patchVersion > rhs.patchVersion
     }
 }

@@ -8,19 +8,21 @@
 
 import Foundation
 
-/// Loads and caches the bundled emoji dataset, filtered to what the current OS
-/// can render. The decode happens once, lazily, on first access.
+/// Loads and caches the full bundled emoji dataset. The decode happens once,
+/// lazily, on first access. Version filtering (per OS / per configuration) is
+/// applied downstream by ``EmojiPickerViewModel`` rather than here, so a single
+/// cached dataset can serve pickers with different version policies.
 public enum EmojiProvider {
 
     /// The Unicode/Emoji dataset version bundled with the library.
     public private(set) static var unicodeVersion: String = "?"
 
-    /// Emojis grouped by category, in display order, filtered by availability.
+    /// Every bundled emoji grouped by category, in display order (unfiltered).
     public static let categorized: [(category: EmojiCategory, emojis: [Emoji])] = {
         load()
     }()
 
-    /// A flat, deduplicated list of every available emoji.
+    /// A flat list of every bundled emoji (unfiltered).
     public static let all: [Emoji] = {
         categorized.flatMap { $0.emojis }
     }()
@@ -41,13 +43,10 @@ public enum EmojiProvider {
         }
 
         unicodeVersion = decoded.unicodeVersion
-        let maxVersion = EmojiAvailability.maxAvailableVersion
 
         return decoded.categories.compactMap { raw in
             guard let category = EmojiCategory(rawValue: raw.id) else { return nil }
-            let emojis = raw.emojis
-                .filter { $0.version <= maxVersion }
-                .map { $0.makeEmoji(in: category) }
+            let emojis = raw.emojis.map { $0.makeEmoji(in: category) }
             return emojis.isEmpty ? nil : (category, emojis)
         }
     }

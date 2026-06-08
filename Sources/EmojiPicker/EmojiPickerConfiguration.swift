@@ -20,6 +20,25 @@ public enum EmojiPickerBackground: Sendable {
     case solid
 }
 
+/// Controls which Emoji standard versions the picker offers.
+///
+/// In every case the effective ceiling is also capped by what the *current
+/// device* can render, so the picker never shows tofu (□) regardless of policy.
+public enum EmojiVersionPolicy: Sendable, Equatable {
+    /// Show everything the current device can render (default). Maximises the
+    /// set per device; the offered set therefore differs across OS versions.
+    case device
+
+    /// Cap at the highest Emoji version guaranteed on every OS at or above the
+    /// given deployment target, so all devices down to that OS show the *same*
+    /// set. E.g. `.minimumOS(major: 15, minor: 0)` for an iOS 15 app.
+    case minimumOS(major: Int, minor: Int)
+
+    /// Cap at an explicit Emoji standard version (e.g. `15.0`), for instance to
+    /// match a backend that only stores up to a given version.
+    case maxEmojiVersion(Double)
+}
+
 /// Tunable appearance and behaviour for the picker.
 public struct EmojiPickerConfiguration: Sendable {
 
@@ -51,6 +70,9 @@ public struct EmojiPickerConfiguration: Sendable {
     /// The backdrop drawn behind the picker.
     public var background: EmojiPickerBackground
 
+    /// Which Emoji standard versions to offer (always capped by the device).
+    public var versionPolicy: EmojiVersionPolicy
+
     public init(
         emojiFontSize: CGFloat = 30,
         minimumCellSize: CGFloat = 44,
@@ -60,7 +82,8 @@ public struct EmojiPickerConfiguration: Sendable {
         showsRecents: Bool = true,
         allowsSkinToneSelection: Bool = true,
         dismissesOnSelection: Bool = true,
-        background: EmojiPickerBackground = .ultraThinMaterial
+        background: EmojiPickerBackground = .ultraThinMaterial,
+        versionPolicy: EmojiVersionPolicy = .device
     ) {
         self.emojiFontSize = emojiFontSize
         self.minimumCellSize = minimumCellSize
@@ -71,6 +94,7 @@ public struct EmojiPickerConfiguration: Sendable {
         self.allowsSkinToneSelection = allowsSkinToneSelection
         self.dismissesOnSelection = dismissesOnSelection
         self.background = background
+        self.versionPolicy = versionPolicy
     }
 
     public static let `default` = EmojiPickerConfiguration()

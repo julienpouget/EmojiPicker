@@ -120,13 +120,27 @@ EmojiPickerConfiguration(
     showsRecents: true,
     allowsSkinToneSelection: true,
     dismissesOnSelection: true,
-    background: .ultraThinMaterial   // .thinMaterial / .regularMaterial / .thickMaterial / .solid
+    background: .ultraThinMaterial,  // .thinMaterial / .regularMaterial / .thickMaterial / .solid
+    versionPolicy: .device           // .minimumOS(major:minor:) / .maxEmojiVersion(_)
 )
 ```
 
 The default backdrop is a translucent `.ultraThinMaterial` that adapts to light
 and dark mode (the macOS panel look). The sheet, popover, and inline pickers all
 use the same configured background, so they look consistent across presentations.
+
+### Emoji version policy
+
+Filtering is **per-device at runtime** — the picker never offers an emoji the
+current OS can't render (no tofu), whatever your deployment target. `versionPolicy`
+chooses *which* set, always capped by what the device can render:
+
+- `.device` (default) — show everything the current device can render. Maximises
+  the set per device; the offered set therefore differs across OS versions.
+- `.minimumOS(major:minor:)` — cap at the highest Emoji version guaranteed on every
+  OS down to your deployment target, so the **whole fleet sees the same set**
+  (e.g. `.minimumOS(major: 15, minor: 0)` → Emoji 13.1 everywhere).
+- `.maxEmojiVersion(_)` — cap at an explicit Emoji version (e.g. to match a backend).
 
 ### Persistence
 

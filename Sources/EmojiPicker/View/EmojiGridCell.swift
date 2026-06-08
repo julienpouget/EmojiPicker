@@ -39,13 +39,35 @@ struct EmojiGridCell: View {
     }
 
     var body: some View {
+        if supportsLongPress {
+            // VoiceOver can't trigger the long-press gesture that opens the tone
+            // picker, so expose tap as the default action and the tone picker as
+            // a named accessibility action. The current tone is read as the value.
+            decoratedContent
+                .accessibilityAction { onTap() }
+                .accessibilityAction(named: Text(Self.chooseToneLabel)) { onLongPress() }
+        } else {
+            decoratedContent
+        }
+    }
+
+    private var decoratedContent: some View {
         cellContent
             .anchorPreference(key: SkinToneAnchorKey.self, value: .bounds) { anchor in
                 isToneTarget ? anchor : nil
             }
             .accessibilityLabel(Text(emoji.name))
+            .accessibilityValue(toneAccessibilityValue)
             .accessibilityAddTraits(.isButton)
     }
+
+    /// The currently applied tone, read out by VoiceOver after the name. Empty
+    /// (silent) for the default presentation.
+    private var toneAccessibilityValue: Text {
+        Text(tone?.accessibilityName ?? "")
+    }
+
+    private static let chooseToneLabel = NSLocalizedString("tone.choose", bundle: .module, comment: "")
 
     @ViewBuilder
     private var cellContent: some View {

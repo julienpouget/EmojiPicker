@@ -11,3 +11,11 @@
 "search.placeholder" = "Search Emoji";
 "search.clear" = "Clear search";
 "search.empty" = "No Emoji Found";
+
+"tone.choose" = "Choose skin tone";
+"tone.default" = "default skin tone";
+"tone.light" = "light skin tone";
+"tone.mediumLight" = "medium-light skin tone";
+"tone.medium" = "medium skin tone";
+"tone.mediumDark" = "medium-dark skin tone";
+"tone.dark" = "dark skin tone";

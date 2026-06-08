@@ -68,7 +68,11 @@ final class ModelTests: XCTestCase {
 
     func testEverySkinToneHasAnAccessibilityName() {
         for tone in EmojiSkinTone.allCases {
-            XCTAssertFalse(tone.accessibilityName.isEmpty, "\(tone) has no accessibility name")
+            let name = tone.accessibilityName
+            XCTAssertFalse(name.isEmpty, "\(tone) has no accessibility name")
+            // A missing .strings entry makes NSLocalizedString echo the key back,
+            // so assert the key actually resolved to a localized value.
+            XCTAssertFalse(name.hasPrefix("tone."), "\(tone) accessibility name is an unresolved key: \(name)")
         }
     }
 

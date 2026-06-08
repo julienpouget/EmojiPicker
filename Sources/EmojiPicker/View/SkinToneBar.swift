@@ -24,6 +24,9 @@ struct SkinToneBar: View {
     /// Height reserved on the caret side of the bubble for the caret.
     static let caretHeight: CGFloat = 9
 
+    /// Accessibility label for the default (yellow) presentation choice.
+    static let defaultToneLabel = NSLocalizedString("tone.default", bundle: .module, comment: "")
+
     /// Choices: default (yellow) first, then every supported tone.
     private var choices: [EmojiSkinTone?] {
         [nil] + EmojiSkinTone.allCases.filter { emoji.skinVariants[$0] != nil }
@@ -46,7 +49,7 @@ struct SkinToneBar: View {
                         )
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(Text(tone?.accessibilityName ?? "default skin tone"))
+                .accessibilityLabel(Text(tone?.accessibilityName ?? Self.defaultToneLabel))
             }
         }
         .padding(6)

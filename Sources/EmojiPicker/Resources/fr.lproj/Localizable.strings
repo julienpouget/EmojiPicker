@@ -11,3 +11,11 @@
 "search.placeholder" = "Rechercher un emoji";
 "search.clear" = "Effacer la recherche";
 "search.empty" = "Aucun emoji trouvé";
+
+"tone.choose" = "Choisir le teint";
+"tone.default" = "teint par défaut";
+"tone.light" = "teint clair";
+"tone.mediumLight" = "teint moyennement clair";
+"tone.medium" = "teint moyen";
+"tone.mediumDark" = "teint moyennement foncé";
+"tone.dark" = "teint foncé";

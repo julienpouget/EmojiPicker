@@ -32,14 +32,16 @@ public enum EmojiSkinTone: Int, CaseIterable, Codable, Sendable, Identifiable {
         }
     }
 
-    /// A short, human-readable description suitable for accessibility labels.
+    /// A short, localized description suitable for accessibility labels.
     public var accessibilityName: String {
+        let key: String
         switch self {
-        case .light: return "light skin tone"
-        case .mediumLight: return "medium-light skin tone"
-        case .medium: return "medium skin tone"
-        case .mediumDark: return "medium-dark skin tone"
-        case .dark: return "dark skin tone"
+        case .light: key = "tone.light"
+        case .mediumLight: key = "tone.mediumLight"
+        case .medium: key = "tone.medium"
+        case .mediumDark: key = "tone.mediumDark"
+        case .dark: key = "tone.dark"
         }
+        return NSLocalizedString(key, bundle: .module, comment: "")
     }
 }

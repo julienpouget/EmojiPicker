@@ -22,9 +22,21 @@ jobs:
 
       # The package targets iOS only, so `swift build`/`swift test` can't run on
       # the macOS host — drive it through xcodebuild against an iOS simulator.
+      # OS=latest pins the destination to the newest installed runtime instead
+      # of letting xcodebuild pick an arbitrary one.
       - name: Build & test
         run: |
           set -o pipefail
           xcodebuild test \
             -scheme EmojiPicker \
-            -destination 'platform=iOS Simulator,name=iPhone 16'
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest'
+
+      # Keeps the example app compiling against the package's current API.
+      - name: Build example app
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Example/EmojiPickerDemo.xcodeproj \
+            -scheme EmojiPickerDemo \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            CODE_SIGNING_ALLOWED=NO

@@ -73,6 +73,31 @@ final class EmojiPickerTests: XCTestCase {
         XCTAssertFalse(heart.matches("zzzzz"))
     }
 
+    func testSearchIsCaseAndDiacriticInsensitive() throws {
+        let pinata = try XCTUnwrap(EmojiProvider.byValue["🪅"])
+        XCTAssertEqual(pinata.name, "piñata")
+        XCTAssertTrue(pinata.matches("pinata".searchFolded), "Folded query matches an accented name")
+        XCTAssertTrue(pinata.matches("PIÑATA".searchFolded), "Case and accents fold together")
+    }
+
+    @MainActor
+    func testViewModelSearchFoldsTheQuery() throws {
+        guard EmojiAvailability.maxAvailableVersion >= 13 else {
+            throw XCTSkip("Test host can't render Emoji 13+ (piñata)")
+        }
+        let suite = "EmojiPickerTests-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = EmojiPreferenceStore(defaults: defaults, keyPrefix: "test")
+        let vm = EmojiPickerViewModel(store: store, config: .default)
+
+        vm.searchText = "PINATA"
+        XCTAssertTrue(
+            vm.sections.flatMap(\.items).contains { $0.emoji.value == "🪅" },
+            "An unaccented uppercase query should find piñata"
+        )
+    }
+
     func testSearchIsWordOrderInsensitive() throws {
         let thumbsUp = try XCTUnwrap(EmojiProvider.byValue["👍"])
         XCTAssertTrue(thumbsUp.matches("thumbs up"), "Phrase substring on the name")

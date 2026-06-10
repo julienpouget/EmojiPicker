@@ -28,6 +28,12 @@ public struct Emoji: Identifiable, Hashable, Sendable {
     /// The category this emoji belongs to in the dataset.
     public let category: EmojiCategory
 
+    /// Pre-folded forms of the name and keywords (see `String.searchFolded`),
+    /// computed once at init so per-keystroke matching stays a plain `contains`
+    /// instead of an ICU-backed insensitive comparison per cell.
+    let searchName: String
+    let searchKeywords: [String]
+
     public var id: String { value }
 
     /// Whether this emoji can be rendered with a skin-tone modifier.
@@ -47,6 +53,8 @@ public struct Emoji: Identifiable, Hashable, Sendable {
         self.keywords = keywords
         self.skinVariants = skinVariants
         self.category = category
+        self.searchName = name.searchFolded
+        self.searchKeywords = keywords.map(\.searchFolded)
     }
 
     /// Returns the emoji string rendered with the given tone, falling back to
@@ -58,16 +66,18 @@ public struct Emoji: Identifiable, Hashable, Sendable {
 
     /// Returns `true` when `query` matches the name or keywords.
     ///
-    /// The whole query is first tried as a substring of the name, so natural
-    /// phrases like `"red heart"` match directly. Otherwise every
+    /// `query` must already be search-folded (see `String.searchFolded`), which
+    /// makes the match case- and diacritic-insensitive ("pinata" finds
+    /// "piñata"). The whole query is first tried as a substring of the name, so
+    /// natural phrases like `"red heart"` match directly. Otherwise every
     /// whitespace-separated token must match — as a name substring or a keyword
     /// prefix — so word order doesn't matter (`"up thumbs"` finds `"thumbs up"`).
     func matches(_ query: String) -> Bool {
-        if name.contains(query) { return true }
+        if searchName.contains(query) { return true }
         let tokens = query.split(separator: " ").map(String.init)
         guard !tokens.isEmpty else { return false }
         return tokens.allSatisfy { token in
-            name.contains(token) || keywords.contains { $0.hasPrefix(token) }
+            searchName.contains(token) || searchKeywords.contains { $0.hasPrefix(token) }
         }
     }
 }

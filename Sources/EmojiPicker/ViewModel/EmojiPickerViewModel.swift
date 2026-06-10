@@ -77,7 +77,7 @@ final class EmojiPickerViewModel: ObservableObject {
     func rebuild() {
         let query = searchText
             .trimmingCharacters(in: .whitespaces)
-            .lowercased()
+            .searchFolded
         let maxVersion = maxEmojiVersion
 
         if query.isEmpty {

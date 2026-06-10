@@ -102,16 +102,19 @@ STOPWORDS = {"and", "with", "of", "the", "a", "in", "on", "to", "for"}
 
 DEFAULT_OUTPUT = "Sources/EmojiPicker/Resources/emojis.json"
 
+# All locales are generated from the same cldr-json files (only the locale
+# path segment differs), pinned to a single git ref so a run can never mix
+# CLDR versions across locales.
 CLDR_ANNOTATIONS_URL = (
-    "https://raw.githubusercontent.com/unicode-org/cldr-json/main/"
+    "https://raw.githubusercontent.com/unicode-org/cldr-json/{ref}/"
     "cldr-json/cldr-annotations-full/annotations/{loc}/annotations.json"
 )
 CLDR_DERIVED_URL = (
-    "https://raw.githubusercontent.com/unicode-org/cldr-json/main/"
+    "https://raw.githubusercontent.com/unicode-org/cldr-json/{ref}/"
     "cldr-json/cldr-annotations-derived-full/annotationsDerived/{loc}/annotations.json"
 )
 CLDR_PACKAGE_URL = (
-    "https://raw.githubusercontent.com/unicode-org/cldr-json/main/"
+    "https://raw.githubusercontent.com/unicode-org/cldr-json/{ref}/"
     "cldr-json/cldr-annotations-full/package.json"
 )
 
@@ -166,23 +169,23 @@ def annotation_tokens(texts, stopwords):
     return tokens
 
 
-def fetch_cldr_annotations(locale):
-    """Merged plain + derived CLDR annotations for a locale."""
-    plain = json.loads(fetch(CLDR_ANNOTATIONS_URL.format(loc=locale)))["annotations"]
-    derived = json.loads(fetch(CLDR_DERIVED_URL.format(loc=locale)))["annotationsDerived"]
+def fetch_cldr_annotations(locale, ref):
+    """Merged plain + derived CLDR annotations for a locale, at a git ref."""
+    plain = json.loads(fetch(CLDR_ANNOTATIONS_URL.format(loc=locale, ref=ref)))["annotations"]
+    derived = json.loads(fetch(CLDR_DERIVED_URL.format(loc=locale, ref=ref)))["annotationsDerived"]
     # Plain entries win over derived where both exist.
     return {**derived["annotations"], **plain["annotations"]}
 
 
-def generate_annotations(locales, dataset_path):
+def generate_annotations(locales, dataset_path, ref="main"):
     with open(dataset_path, encoding="utf-8") as f:
         dataset = json.load(f)
     entries = [e for c in dataset["categories"] for e in c["emojis"]]
-    version = json.loads(fetch(CLDR_PACKAGE_URL)).get("version", "?")
+    version = json.loads(fetch(CLDR_PACKAGE_URL.format(ref=ref))).get("version", "?")
 
     for locale in locales:
-        print(f"downloading CLDR annotations for {locale}", file=sys.stderr)
-        cldr = fetch_cldr_annotations(locale)
+        print(f"downloading CLDR annotations for {locale} ({ref})", file=sys.stderr)
+        cldr = fetch_cldr_annotations(locale, ref)
         stopwords = ANNOTATION_STOPWORDS.get(locale, set())
         out = {}
         missing = []
@@ -353,10 +356,12 @@ def main():
     parser.add_argument("--url", help="explicit emoji-test.txt URL")
     parser.add_argument("--annotations", nargs="+", metavar="LOCALE",
                         help="generate annotations-<locale>.json from CLDR for the existing dataset, e.g. --annotations en fr")
+    parser.add_argument("--cldr-ref", default="main", metavar="REF",
+                        help="cldr-json git ref to fetch annotations from, e.g. 48.2.0 to reproduce a release (default: main)")
     args = parser.parse_args()
 
     if args.annotations:
-        generate_annotations(args.annotations, args.output)
+        generate_annotations(args.annotations, args.output, args.cldr_ref)
         return
 
     text, label = load_source(args)

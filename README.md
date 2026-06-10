@@ -203,15 +203,19 @@ python3 Scripts/generate-emoji-data.py --input emoji-test.txt   # a local file
 It reads the version from the file's own `# Version:` header (so the JSON's
 `unicodeVersion` always matches the source) and skips the in-progress draft.
 
-The localized names and search keywords come from the CLDR annotations and are
-regenerated per locale into `annotations-<locale>.json`:
+The localized names and search keywords come from the CLDR annotations (the
+same cldr-json source for every locale) and are regenerated per locale into
+`annotations-<locale>.json`:
 
 ```bash
-python3 Scripts/generate-emoji-data.py --annotations en fr
+python3 Scripts/generate-emoji-data.py --annotations en fr                   # latest (main)
+python3 Scripts/generate-emoji-data.py --annotations en fr --cldr-ref 48.2.0 # reproduce a release
 ```
 
-Regenerate them whenever the dataset is bumped, and add the new locale to
-`Package.swift` resources when introducing one.
+The CLDR version used is recorded as `cldrVersion` in each file; pass it back
+via `--cldr-ref` to regenerate byte-identical output. Regenerate whenever the
+dataset is bumped, and add the new locale to `Package.swift` resources when
+introducing one.
 
 When you bump to a newer Emoji version, also add the matching OS→Emoji-version
 row to `EmojiAvailability.releaseMap` — otherwise the new emoji are filtered out

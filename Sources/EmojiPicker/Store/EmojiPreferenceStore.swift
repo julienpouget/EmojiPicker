@@ -13,6 +13,10 @@ import Foundation
 ///
 /// All keys are namespaced so multiple independent pickers can share state, or
 /// be isolated by passing a custom suite / key prefix.
+///
+/// Tone reads are served from an in-memory cache loaded at init, so tone
+/// changes written through a *different* store instance on the same defaults
+/// are not observed by this one.
 public final class EmojiPreferenceStore {
 
     /// A shared store backed by `UserDefaults.standard`.
@@ -23,6 +27,12 @@ public final class EmojiPreferenceStore {
     private let tonesKey: String
     private let maxRecent: Int
 
+    /// In-memory mirror of the persisted tone map, written through on change.
+    /// `preferredTone(for:)` runs once per emoji on every grid rebuild (each
+    /// keystroke), and `UserDefaults.dictionary(forKey:)` re-bridges the whole
+    /// plist dictionary on every call — too costly for that path.
+    private var tonesCache: [String: Int]
+
     public init(
         defaults: UserDefaults = .standard,
         keyPrefix: String = "EmojiPicker",
@@ -32,6 +42,7 @@ public final class EmojiPreferenceStore {
         self.recentKey = "\(keyPrefix).recent"
         self.tonesKey = "\(keyPrefix).preferredTones"
         self.maxRecent = maxRecent
+        self.tonesCache = defaults.dictionary(forKey: tonesKey) as? [String: Int] ?? [:]
     }
 
     // MARK: Recents
@@ -58,19 +69,17 @@ public final class EmojiPreferenceStore {
 
     /// The preferred skin tone for a given base emoji, if the user picked one.
     public func preferredTone(for emoji: String) -> EmojiSkinTone? {
-        let map = defaults.dictionary(forKey: tonesKey) as? [String: Int] ?? [:]
-        guard let raw = map[emoji] else { return nil }
+        guard let raw = tonesCache[emoji] else { return nil }
         return EmojiSkinTone(rawValue: raw)
     }
 
     /// Stores (or clears, when `tone` is `nil`) the preferred tone for an emoji.
     public func setPreferredTone(_ tone: EmojiSkinTone?, for emoji: String) {
-        var map = defaults.dictionary(forKey: tonesKey) as? [String: Int] ?? [:]
         if let tone {
-            map[emoji] = tone.rawValue
+            tonesCache[emoji] = tone.rawValue
         } else {
-            map.removeValue(forKey: emoji)
+            tonesCache.removeValue(forKey: emoji)
         }
-        defaults.set(map, forKey: tonesKey)
+        defaults.set(tonesCache, forKey: tonesKey)
     }
 }

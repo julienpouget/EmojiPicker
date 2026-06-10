@@ -44,6 +44,18 @@ final class StoreTests: XCTestCase {
         XCTAssertEqual(store.preferredTone(for: "👋"), .medium, "Tones must survive a recents clear")
     }
 
+    func testPreferredTonesPersistAcrossStoreInstances() {
+        let (store, defaults, suite) = makeStore()
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        store.setPreferredTone(.dark, for: "👋")
+
+        // A fresh store on the same defaults must see the persisted tone —
+        // guards against the in-memory cache short-circuiting the write.
+        let reloaded = EmojiPreferenceStore(defaults: defaults, keyPrefix: "test")
+        XCTAssertEqual(reloaded.preferredTone(for: "👋"), .dark)
+    }
+
     func testClearRecentIsIdempotentOnAnEmptyStore() {
         let (store, defaults, suite) = makeStore()
         defer { defaults.removePersistentDomain(forName: suite) }

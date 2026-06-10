@@ -14,6 +14,7 @@ import UIKit
 
 /// Thin wrapper around platform haptic feedback, a no-op where unavailable.
 enum Haptics {
+    @MainActor
     static func impact() {
         #if canImport(UIKit)
         let generator = UIImpactFeedbackGenerator(style: .light)

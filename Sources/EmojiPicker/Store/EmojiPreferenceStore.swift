@@ -17,7 +17,11 @@ import Foundation
 /// Tone reads are served from an in-memory cache loaded at init, so tone
 /// changes written through a *different* store instance on the same defaults
 /// are not observed by this one.
-public final class EmojiPreferenceStore {
+///
+/// `@unchecked Sendable`: `UserDefaults` is thread-safe and the mutable tone
+/// cache is guarded by a lock, so instances can be shared across isolation
+/// domains (e.g. created in app setup, used by main-actor pickers).
+public final class EmojiPreferenceStore: @unchecked Sendable {
 
     /// A shared store backed by `UserDefaults.standard`.
     public static let shared = EmojiPreferenceStore()
@@ -31,7 +35,9 @@ public final class EmojiPreferenceStore {
     /// `preferredTone(for:)` runs once per emoji on every grid rebuild (each
     /// keystroke), and `UserDefaults.dictionary(forKey:)` re-bridges the whole
     /// plist dictionary on every call — too costly for that path.
+    /// Guarded by `lock` (see the `Sendable` note on the class).
     private var tonesCache: [String: Int]
+    private let lock = NSLock()
 
     public init(
         defaults: UserDefaults = .standard,
@@ -69,17 +75,22 @@ public final class EmojiPreferenceStore {
 
     /// The preferred skin tone for a given base emoji, if the user picked one.
     public func preferredTone(for emoji: String) -> EmojiSkinTone? {
+        lock.lock()
+        defer { lock.unlock() }
         guard let raw = tonesCache[emoji] else { return nil }
         return EmojiSkinTone(rawValue: raw)
     }
 
     /// Stores (or clears, when `tone` is `nil`) the preferred tone for an emoji.
     public func setPreferredTone(_ tone: EmojiSkinTone?, for emoji: String) {
+        lock.lock()
         if let tone {
             tonesCache[emoji] = tone.rawValue
         } else {
             tonesCache.removeValue(forKey: emoji)
         }
-        defaults.set(tonesCache, forKey: tonesKey)
+        let snapshot = tonesCache
+        lock.unlock()
+        defaults.set(snapshot, forKey: tonesKey)
     }
 }

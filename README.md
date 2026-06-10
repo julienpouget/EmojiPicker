@@ -28,7 +28,7 @@ a sheet, a native popover, or embed it inline.
 ## Requirements
 
 - iOS 15.0+
-- Swift 5.7+ / Xcode 14+
+- Xcode 16+ (the package builds in Swift 6 language mode with strict concurrency)
 
 ## Installation
 

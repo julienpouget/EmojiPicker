@@ -18,6 +18,8 @@ let package = Package(
             name: "EmojiPicker",
             resources: [
                 .process("Resources/emojis.json"),
+                .process("Resources/annotations-en.json"),
+                .process("Resources/annotations-fr.json"),
                 .process("Resources/Localizable.xcstrings"),
                 // Privacy manifest: must keep its exact name at the bundle
                 // root for Xcode's privacy-report aggregation, hence `.copy`.

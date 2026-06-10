@@ -69,15 +69,23 @@ final class EmojiPickerTests: XCTestCase {
 
     func testSearchMatchesNameAndKeywords() throws {
         let heart = try XCTUnwrap(EmojiProvider.byValue["❤️"])
-        XCTAssertTrue(heart.matches("heart"))
-        XCTAssertFalse(heart.matches("zzzzz"))
+        XCTAssertTrue(searchMatches(heart, "heart"))
+        XCTAssertFalse(searchMatches(heart, "zzzzz"))
     }
 
     func testSearchIsCaseAndDiacriticInsensitive() throws {
         let pinata = try XCTUnwrap(EmojiProvider.byValue["🪅"])
         XCTAssertEqual(pinata.name, "piñata")
-        XCTAssertTrue(pinata.matches("pinata".searchFolded), "Folded query matches an accented name")
-        XCTAssertTrue(pinata.matches("PIÑATA".searchFolded), "Case and accents fold together")
+        XCTAssertTrue(searchMatches(pinata, "pinata"), "Folded query matches an accented name")
+        XCTAssertTrue(searchMatches(pinata, "PIÑATA"), "Case and accents fold together")
+    }
+
+    func testSearchTokenizesLikeTheGenerator() {
+        XCTAssertEqual("drapeau : france".searchTokens, ["drapeau", "france"])
+        XCTAssertEqual("j'adore".searchFolded.searchTokens, ["adore"], "Single letters drop, words stay")
+        XCTAssertEqual("12:30".searchTokens, ["12", "30"], "Digits survive even alone")
+        XCTAssertEqual("+1".searchTokens, ["+1"], "The + sign is part of the token")
+        XCTAssertEqual("...".searchTokens, [], "Pure punctuation yields no tokens")
     }
 
     @MainActor
@@ -100,9 +108,9 @@ final class EmojiPickerTests: XCTestCase {
 
     func testSearchIsWordOrderInsensitive() throws {
         let thumbsUp = try XCTUnwrap(EmojiProvider.byValue["👍"])
-        XCTAssertTrue(thumbsUp.matches("thumbs up"), "Phrase substring on the name")
-        XCTAssertTrue(thumbsUp.matches("up thumbs"), "Tokens match regardless of order")
-        XCTAssertFalse(thumbsUp.matches("up rocket"), "Every token must match")
+        XCTAssertTrue(searchMatches(thumbsUp, "thumbs up"), "Phrase substring on the name")
+        XCTAssertTrue(searchMatches(thumbsUp, "up thumbs"), "Tokens match regardless of order")
+        XCTAssertFalse(searchMatches(thumbsUp, "up rocket"), "Every token must match")
     }
 
     func testTonedRecentResolvesViaReverseIndex() throws {

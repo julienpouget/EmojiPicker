@@ -59,7 +59,7 @@ struct EmojiGridCell: View {
             .anchorPreference(key: SkinToneAnchorKey.self, value: .bounds) { anchor in
                 isToneTarget ? anchor : nil
             }
-            .accessibilityLabel(Text(emoji.name))
+            .accessibilityLabel(Text(emoji.localizedName))
             .accessibilityValue(toneAccessibilityValue)
             .accessibilityAddTraits(.isButton)
     }

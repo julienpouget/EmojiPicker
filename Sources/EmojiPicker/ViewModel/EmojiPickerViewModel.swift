@@ -98,7 +98,16 @@ final class EmojiPickerViewModel: ObservableObject {
             }
             sections = result
         } else {
-            let matches = EmojiProvider.all.filter { $0.version <= maxVersion && $0.matches(query) }
+            // The query is tokenized like the stored keywords were, and the
+            // locale's stopwords are dropped, so a phrase typed verbatim
+            // ("visage qui rougit", "j'adore") matches its stored tokens.
+            // Matching resolves each token against the English dataset terms
+            // and the localized CLDR annotations together.
+            let localized = EmojiAnnotations.current
+            let tokens = query.searchTokens.filter { !localized.stopwords.contains($0) }
+            let matches = EmojiProvider.all.filter {
+                $0.version <= maxVersion && localized.matches($0, query: query, tokens: tokens)
+            }
             sections = matches.isEmpty
                 ? []
                 : [Section(category: .smileysAndPeople, items: matches.map(makeItem))]

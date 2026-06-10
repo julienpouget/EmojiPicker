@@ -39,6 +39,13 @@ public struct Emoji: Identifiable, Hashable, Sendable {
     /// Whether this emoji can be rendered with a skin-tone modifier.
     public var supportsSkinTones: Bool { !skinVariants.isEmpty }
 
+    /// The name in the user's language when the bundled CLDR annotations
+    /// provide one, falling back to the Unicode short name. Used for the
+    /// VoiceOver label of grid cells.
+    public var localizedName: String {
+        EmojiAnnotations.current.name(for: value) ?? name
+    }
+
     public init(
         value: String,
         name: String,
@@ -64,20 +71,7 @@ public struct Emoji: Identifiable, Hashable, Sendable {
         return variant
     }
 
-    /// Returns `true` when `query` matches the name or keywords.
-    ///
-    /// `query` must already be search-folded (see `String.searchFolded`), which
-    /// makes the match case- and diacritic-insensitive ("pinata" finds
-    /// "piñata"). The whole query is first tried as a substring of the name, so
-    /// natural phrases like `"red heart"` match directly. Otherwise every
-    /// whitespace-separated token must match — as a name substring or a keyword
-    /// prefix — so word order doesn't matter (`"up thumbs"` finds `"thumbs up"`).
-    func matches(_ query: String) -> Bool {
-        if searchName.contains(query) { return true }
-        let tokens = query.split(separator: " ").map(String.init)
-        guard !tokens.isEmpty else { return false }
-        return tokens.allSatisfy { token in
-            searchName.contains(token) || searchKeywords.contains { $0.hasPrefix(token) }
-        }
-    }
+    // Search matching lives in EmojiAnnotations.matches(_:query:tokens:),
+    // which resolves each query token against this emoji's English vocabulary
+    // (searchName/searchKeywords) and the locale's annotations together.
 }

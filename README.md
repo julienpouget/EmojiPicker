@@ -18,11 +18,11 @@ a sheet, a native popover, or embed it inline.
 - 🎯 **macOS-style popover** — SwiftUI's native popover: an arrow anchored to your button on iPad (all versions) and iPhone (iOS 16.4+), with a graceful sheet fallback on older iPhones.
 - 🌗 **Translucent & theme-aware** — `.ultraThinMaterial` backdrop by default, adapting to light/dark.
 - 🗂️ **8 categories** with a macOS-style scrolling grid, sticky headers, and a synced tab bar.
-- 🔎 **Search** by name and keyword.
+- 🔎 **Search** by name and keyword — in the user's language (CLDR annotations, English & French bundled) and in English, case- and diacritic-insensitive (`coeur` finds ❤️, `pinata` finds 🪅).
 - 🕘 **Recently used** section, persisted across launches.
 - 🎨 **Skin tones** — long-press any supported emoji to pick a Fitzpatrick tone; the choice is remembered per emoji.
 - 📐 **OS-aware dataset** — emoji newer than the running OS are filtered out automatically, so you never render tofu (□).
-- 🌍 **Localized** (English & French out of the box).
+- 🌍 **Localized** (English & French out of the box) — UI strings, search keywords, and VoiceOver emoji names (from CLDR).
 - 📦 Built from the official **Unicode 17.0** `emoji-test.txt` (1,914 emoji, 313 with skin tones).
 
 ## Requirements
@@ -162,12 +162,12 @@ view.emojiPicker(isPresented: $show, selection: $emoji, store: store)
 
 ```
 Model/      Emoji, EmojiCategory, EmojiSkinTone — pure value types
-Data/       JSON decoding, OS availability filtering, cached EmojiProvider
+Data/       JSON decoding, OS availability filtering, cached EmojiProvider, CLDR annotations (localized names + keywords)
 Store/      EmojiPreferenceStore — recents + tone prefs (UserDefaults)
 ViewModel/  EmojiPickerViewModel — sections, search, selection (@MainActor)
 View/       EmojiPickerView and its subviews (grid cell, search, tab bar, tone bar) + sheet & popover modifiers
-Support/    Haptics, background-style helper
-Resources/  emojis.json + Localizable.xcstrings (String Catalog)
+Support/    Haptics, background-style helper, search folding
+Resources/  emojis.json + annotations-<locale>.json + Localizable.xcstrings (String Catalog)
 ```
 
 The skin-tone bar is positioned with SwiftUI `Anchor`/`overlayPreferenceValue`,
@@ -202,6 +202,16 @@ python3 Scripts/generate-emoji-data.py --input emoji-test.txt   # a local file
 
 It reads the version from the file's own `# Version:` header (so the JSON's
 `unicodeVersion` always matches the source) and skips the in-progress draft.
+
+The localized names and search keywords come from the CLDR annotations and are
+regenerated per locale into `annotations-<locale>.json`:
+
+```bash
+python3 Scripts/generate-emoji-data.py --annotations en fr
+```
+
+Regenerate them whenever the dataset is bumped, and add the new locale to
+`Package.swift` resources when introducing one.
 
 When you bump to a newer Emoji version, also add the matching OS→Emoji-version
 row to `EmojiAvailability.releaseMap` — otherwise the new emoji are filtered out

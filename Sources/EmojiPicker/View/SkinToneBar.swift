@@ -21,6 +21,10 @@ struct SkinToneBar: View {
     let caretTargetX: CGFloat
     let onSelect: (EmojiSkinTone?) -> Void
 
+    // Matches the grid cells' Dynamic Type scaling so the callout's tone
+    // glyphs render at the same size as the pressed emoji.
+    @ScaledMetric(relativeTo: .body) private var typeScale: CGFloat = 1
+
     /// Height reserved on the caret side of the bubble for the caret.
     static let caretHeight: CGFloat = 9
 
@@ -39,7 +43,7 @@ struct SkinToneBar: View {
                     onSelect(tone)
                 } label: {
                     Text(emoji.string(for: tone))
-                        .font(.system(size: configuration.emojiFontSize))
+                        .font(.system(size: configuration.emojiFontSize * typeScale))
                         .padding(6)
                         .background(
                             RoundedRectangle(cornerRadius: 8, style: .continuous)

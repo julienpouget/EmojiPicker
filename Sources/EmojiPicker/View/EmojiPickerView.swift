@@ -40,6 +40,9 @@ public struct EmojiPickerView: View {
     // container. Emoji glyphs render wider than their point size, so estimating
     // the width undershoots and the bubble gets clipped at the edges.
     @State private var toneBarSize: CGSize = .zero
+    // Dynamic Type scale: cells must grow with the glyphs (which scale in
+    // EmojiGridCell), otherwise large text sizes clip inside fixed-size cells.
+    @ScaledMetric(relativeTo: .body) private var typeScale: CGFloat = 1
     @Environment(\.dismiss) private var dismiss
 
     private let scrollSpace = "emojiPickerScroll"
@@ -121,7 +124,7 @@ public struct EmojiPickerView: View {
     }
 
     private var columns: [GridItem] {
-        [GridItem(.adaptive(minimum: configuration.minimumCellSize), spacing: configuration.cellSpacing)]
+        [GridItem(.adaptive(minimum: configuration.minimumCellSize * typeScale), spacing: configuration.cellSpacing)]
     }
 
     private func cell(for item: EmojiPickerViewModel.Item) -> some View {
@@ -141,6 +144,9 @@ public struct EmojiPickerView: View {
             Text(category.title.uppercased())
                 .font(.caption2.weight(.semibold))
                 .foregroundColor(.secondary)
+                // Header trait so VoiceOver users can jump between categories
+                // with the rotor instead of swiping through every cell.
+                .accessibilityAddTraits(.isHeader)
             Spacer()
         }
         .padding(.vertical, 4)

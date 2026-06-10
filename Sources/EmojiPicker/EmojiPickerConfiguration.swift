@@ -42,11 +42,13 @@ public enum EmojiVersionPolicy: Sendable, Equatable {
 /// Tunable appearance and behaviour for the picker.
 public struct EmojiPickerConfiguration: Sendable {
 
-    /// Point size used to render each emoji glyph.
+    /// Point size used to render each emoji glyph, at the default Dynamic Type
+    /// size. The rendered size follows the user's text-size setting.
     public var emojiFontSize: CGFloat
 
     /// Minimum width allotted to a grid cell; the grid lays out as many columns
-    /// as fit. Cells are square.
+    /// as fit. Cells are square. Specified at the default Dynamic Type size and
+    /// scaled with the user's text-size setting, in step with the glyphs.
     public var minimumCellSize: CGFloat
 
     /// Spacing between grid cells.

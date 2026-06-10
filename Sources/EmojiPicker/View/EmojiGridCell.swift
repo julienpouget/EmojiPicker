@@ -32,6 +32,9 @@ struct EmojiGridCell: View {
     let onLongPress: () -> Void
 
     @State private var isPressed = false
+    // Dynamic Type scale applied to the configured glyph size, so the grid
+    // follows the user's text size like the system keyboard does.
+    @ScaledMetric(relativeTo: .body) private var typeScale: CGFloat = 1
 
     private var glyph: String { emoji.string(for: tone) }
     private var supportsLongPress: Bool {
@@ -106,7 +109,7 @@ struct EmojiGridCell: View {
 
     private var glyphLabel: some View {
         Text(glyph)
-            .font(.system(size: configuration.emojiFontSize))
+            .font(.system(size: configuration.emojiFontSize * typeScale))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
     }
